@@ -84,7 +84,7 @@ module macPipe_formal #(
             assert(!valid_out);
     end
 
-    // Property 2: latency contract — valid_out implies valid_in 2 cycles ago.
+    // Property 2: Latency contract: valid_out implies valid_in 2 cycles ago.
     // If valid_out is triggering without a corresponding valid_in, we run
     // into the same issue as below except worse because we could be telling
     // devices down the line they CAN trust the data with bad data
@@ -95,7 +95,7 @@ module macPipe_formal #(
                 assert($past(valid_in, 2));
     end
 
-	// Property 3: liveness - valid_in implies valid_out in 2 cycles assuming
+	// Property 3: Liveness: valid_in implies valid_out in 2 cycles assuming
 	// no resets trigger. If valid_in didn't imply valid_out propagation,
 	// devices down the line wouldn't be able to trust the data from the MAC
 	// k-induction proven depth 50
@@ -104,9 +104,10 @@ module macPipe_formal #(
 			if ($past(valid_in, 2) && !$past(rst, 2) && !$past(rst, 1))
 				assert(valid_out);
 	end
-	// Property 4: Moving target - reset during a valid transaction kills the
+	// Property 4: Moving target: reset during a valid transaction kills the
 	// valid transaction. If reset can't stop valid transactions, what is the
 	// point of reset? It's purpose is to fully reset the device
+	// k-induction proven to depth 50
 	always @(posedge clk) begin
 		if (cycle_count >= 3)
 			if ($past(valid_in, 2) && ($past(rst, 2) || $past(rst, 1)))
