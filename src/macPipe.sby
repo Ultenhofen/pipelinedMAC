@@ -1,0 +1,15 @@
+[options]
+mode bmc
+depth 50
+
+[engines]
+smtbmc
+
+[script]
+read -formal macPipe.sv
+read -formal macPipe_formal.sv
+prep -top macPipe_formal
+
+[files]
+macPipe.sv
+macPipe_formal.sv
