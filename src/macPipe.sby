@@ -3,7 +3,7 @@ mode bmc
 depth 50
 
 [engines]
-smtbmc
+smtbmc yices
 
 [script]
 read -formal macPipe.sv

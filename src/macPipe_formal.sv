@@ -18,23 +18,24 @@
 // -----------------------------------------------------------------------------
 
 module macPipe_formal #(
-    parameter int WIDTH = 8
+    parameter int DATA_W = 8,
+	parameter int RESULT_W = 32
 )(
     input logic clk,
     input logic rst,
     input logic valid_in,
     input logic acc,
-    input logic [WIDTH-1:0] A, B
+    input logic [DATA_W-1:0] A, B
 );
 
-	logic [WIDTH*2-1:0] mul_reg;
-    logic [WIDTH*3-1:0] result;
-	logic [WIDTH*3-1:0] res_reg;
+	logic [DATA_W*2-1:0] mul_reg;
+    logic [RESULT_W-1:0] result;
+	logic [RESULT_W-1:0] res_reg;
 	logic acc_ref;
     logic valid_out;
 	logic val_reg;
 
-    macPipe #(.WIDTH(WIDTH)) dut (
+    macPipe #(.DATA_W(DATA_W), .RESULT_W(RESULT_W)) dut (
         .clk(clk),
         .rst(rst),
         .acc(acc),
@@ -58,9 +59,9 @@ module macPipe_formal #(
 				mul_reg <= A * B;
 			if (val_reg) begin
 				if(acc_ref)
-					res_reg <= res_reg + mul_reg;
+					res_reg <= res_reg + {{(RESULT_W - 2*DATA_W){1'b0}}, mul_reg};
 				else
-					res_reg <= mul_reg;
+					res_reg <= {{(RESULT_W - 2*DATA_W){1'b0}}, mul_reg};
 			end
 		end
 	end
@@ -68,13 +69,9 @@ module macPipe_formal #(
 
     reg [3:0] cycle_count;
     initial cycle_count = 0;
+	initial assume(rst);
     always @(posedge clk)
         if (cycle_count < 15) cycle_count <= cycle_count + 1;
-
-    // Force a known reset at startup so initial state is defined
-    always @(*) begin
-        if (cycle_count == 0) assume(rst);
-    end
 
     // Property 1: rst high means valid_out low next cycle. Reset must full
     // reset the device. Otherwise, we could push garbage values through to
@@ -121,7 +118,7 @@ module macPipe_formal #(
 	always @(posedge clk) begin
 		if (cycle_count >= 3)
 			if (valid_out && !$past(acc,2))
-				assert(result == (WIDTH*2)'($past(A,2))*(WIDTH*2)'($past(B,2)));
+				assert(result == (RESULT_W)'($past(A,2))*(RESULT_W)'($past(B,2)));
 	end
 	
 	// Property 6: valid_out and acc implies result equals result + (A * B).
