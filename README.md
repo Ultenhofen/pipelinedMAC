@@ -14,19 +14,20 @@ Computes the equation `result = result + (A x B)` across a 2 stage pipeline. The
 | 2     | Accumulate         |
 
 **Parameters**
-- `WIDTH` - input operand width (default: 8) Output is scaled to 3x input width for accumulate headroom for 256 max value accumulates
+- `DATA_W` - input operand width (default: 8)
+- `RESULT_W` - output operand width (default: 32)
 
 **Interface**
 
-| Signal       | Dir | Width      | Description                        |
-|--------------|-----|------------|------------------------------------|
-| `clk`        | in  | 1          | Clock                              |
-| `rst`        | in  | 1          | Active-high synchronous reset      |
-| `valid_in`   | in  | 1          | Input operands are valid           |
-| `accumulate` | in  | 1          | Hold running total when asserted   |
-| `A`, `B`     | in  | WIDTH      | Multiplicand and multiplier        |
-| `result`     | out | 3*WIDTH    | Accumulated output                 |
-| `valid_out`  | out | 1          | Output is valid                    |
+| Signal       | Dir | Width      | Description                            |
+|--------------|-----|------------|----------------------------------------|
+| `clk`        | in  | 1          | Clock                                  |
+| `rst`        | in  | 1          | Active-high synchronous reset          |
+| `valid_in`   | in  | 1          | Input operands are valid               |
+| `acc`        | in  | 1          | Accumulate running total when asserted |
+| `A`, `B`     | in  | DATA_W     | Multiplicand and multiplier            |
+| `result`     | out | RESULT_W   | Accumulated output                     |
+| `valid_out`  | out | 1          | Output is valid                        |
 
 ## Running Simulations
 
