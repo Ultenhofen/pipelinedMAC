@@ -77,8 +77,10 @@ module macPipe_formal #(
     // reset the device. Otherwise, we could push garbage values through to
     // the next stage
     always @(posedge clk) begin
-        if (cycle_count > 1 && $past(rst))
+        if (cycle_count > 1 && $past(rst)) begin
             assert(!valid_out);
+            assert(result == 0);
+		end
     end
 
     // Property 2: Latency contract: valid_out implies valid_in 2 cycles ago.
