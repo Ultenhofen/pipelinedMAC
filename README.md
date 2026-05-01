@@ -58,3 +58,4 @@ k-induction proof to depth 50, last property bmc proven to depth 50
 1. Do the multiply by hand instead of using the `*` operator. This will give me greater control and intent in what is actually synthesized. Potential performance improvements can arise from this as shrinking the volume of combinational logic would increase the theoretical clock speed the MAC could be run at
 2. Building a UVM testbench. Proper coverage for my code is always appreciated although UVM may be a bit overkill for such a small project. Skills development is always appreciated!
 3. Properly defined overflow handling. As of the moment, overflow resets to zero! Implement a saturation handler and have it be selectable at instantiation which handler you want to use, overflow or saturate
+4. Register inputs A and B. Input into heavy combinational logic is timing path issue.
